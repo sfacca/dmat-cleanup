@@ -1,3 +1,8 @@
+using SparseArrays, Distances, Distributions
+
+#include("make_dmat.jl")
+include("jl lemma.jl")
+
 function find_equal_rows(mat)
     #mat is sparse
     # get rev mat
@@ -49,6 +54,23 @@ function find_equal_sparse_arrays(sparr)
 end
 
 
+function make_dmat(doc_mat)
+    convert(
+        Array{T} where T <: AbstractFloat, 
+        pairwise(SqEuclidean(), doc_mat)
+        )
+end
+
+
+function make_sample_bow_mat(words = 7, docs = 8, rate=0.2, distr = collect(0:100))
+    mat = sprand(words, docs, rate)
+    for i in 1:length(mat.nzval)
+        mat.nzval[i] = distr[Int(round(mat.nzval[i]*length(distr)))]
+    end
+    mat
+
+end
+
 
 
 
@@ -62,3 +84,7 @@ struct SparseMatrixCSC{Tv,Ti<:Integer} <: AbstractSparseMatrixCSC{Tv,Ti}
     nzval::Vector{Tv}       # Stored values, typically nonzeros
 end
 =#
+
+# https://www.cs.cmu.edu/afs/cs/project/pscico-guyb/realworld/www/slidesF15/dim-redn.pdf
+# Johnson Lindenstrauss lemma
+# http://www.johnmyleswhite.com/notebook/2014/03/24/a-note-on-the-johnson-lindenstrauss-lemma/
