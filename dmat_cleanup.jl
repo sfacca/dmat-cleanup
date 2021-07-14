@@ -1,4 +1,5 @@
 using SparseArrays, Distances, Distributions
+using LinearAlgebra
 
 #include("make_dmat.jl")
 include("jl lemma.jl")
